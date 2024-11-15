@@ -1,9 +1,8 @@
-# [[https://roadmap.sh/projects/task-tracker |Task Tracker]] by [[https://roadmap.sh/ |RoadMap]]
+# [Task Tracker](https://roadmap.sh/projects/task-tracker) by [RoadMap](https://roadmap.sh/)
 
 ## Description
 Task tracker is a project used to track and manage your tasks. In this task, you will build a simple command line interface (CLI) to track what you need to do, what you have done, and what you are currently working on. This project will help you practice your programming skills, including working with the filesystem, handling user inputs, and building a simple CLI application.
 
----
 
 # Requirements
 The application should run from the command line, accept user actions and inputs as arguments, and store the tasks in a JSON file. The user should be able to:
@@ -16,7 +15,6 @@ The application should run from the command line, accept user actions and inputs
 - List all tasks that are in progress
 - Here are some constraints to guide the implementation:
 
----
 
 ## Reminder:
 - You can use any programming language to build this project.
