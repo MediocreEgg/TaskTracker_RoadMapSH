@@ -31,6 +31,7 @@ public class userInterface {
         panel.add(inputField);
         
         mainFrame.add(panel);
+        mainFrame.pack();
     }
 
 
