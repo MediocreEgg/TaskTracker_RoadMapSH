@@ -1,5 +1,7 @@
 package org.taskTracker.backend.pojo;
 
+import org.taskTracker.backend.exception.InvalidValueArgumentException;
+
 public enum TaskStatus {
 	INPROGRESS("In Progress"),
 	NOTDONE("Not Done"), 
@@ -15,11 +17,11 @@ public enum TaskStatus {
 		return this.status;
 	}
 	
-	public TaskStatus whichStatus(String input) {
+	public static TaskStatus whichStatus(String input) throws InvalidValueArgumentException {
 		for(TaskStatus taskStatus: TaskStatus.values())
 			if(taskStatus.status.equalsIgnoreCase(input))
 				return taskStatus;
 		
-		return null;
+		throw new InvalidValueArgumentException("Unexpected value: " + input);
 	}
 }
