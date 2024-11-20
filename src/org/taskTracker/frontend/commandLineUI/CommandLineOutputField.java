@@ -22,8 +22,7 @@ public class CommandLineOutputField extends JScrollPane implements CommandLineFi
 	
 	public CommandLineOutputField() {
 		super(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		this.setBorder(BorderFactory.createBevelBorder(5, Color.YELLOW, Color.BLACK));
-		
+		initSize();
 		initTextArea();
 	}
 
@@ -63,8 +62,7 @@ public class CommandLineOutputField extends JScrollPane implements CommandLineFi
 	 */
 		
 	void initTextArea() {
-		outputField = new JTextArea("Hello");
-		outputField.setPreferredSize(dimension(INFINITE_WIDTH, 200));
+		outputField = new JTextArea();
 		outputField.setWrapStyleWord(true);
 		outputField.setLineWrap(true);
 		outputField.setEditable(false);
