@@ -24,8 +24,6 @@ public class CommandLineInputField extends JTextField implements CommandLineFiel
 	public CommandLineInputField() {
 		super();
 		initSize();
-		this.setMaximumSize(dimension(INFINITE_WIDTH, 30));
-		this.setMinimumSize(dimension(0, 10));
 	}
 
 	public CommandLineInputField(String text) {
@@ -41,7 +39,8 @@ public class CommandLineInputField extends JTextField implements CommandLineFiel
 
 	@Override
 	public void initSize() {
-		this.setPreferredSize(dimension(this.width, this.height));
+		this.setMaximumSize(dimension(Integer.MAX_VALUE, 100));
+		this.setMinimumSize(dimension(0, 25));
 	}
 
 	@Override
