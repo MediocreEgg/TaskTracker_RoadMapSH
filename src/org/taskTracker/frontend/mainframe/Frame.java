@@ -29,7 +29,7 @@ public class Frame extends JFrame implements Iframe{
 	private void init(){
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
-        this.setMinimumSize(new Dimension(FRAME_HEIGHT, FRAME_WIDTH));
+        this.setMinimumSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
         this.setVisible(true);
     }
 
