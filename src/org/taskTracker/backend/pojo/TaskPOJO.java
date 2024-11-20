@@ -1,15 +1,15 @@
 package org.taskTracker.backend.pojo;
 
 import java.io.Serializable;
+import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 import org.taskTracker.backend.annotation.JSONElement;
-import org.taskTracker.backend.annotation.JSONElementArray;
 import org.taskTracker.backend.annotation.JSONObject;
+import org.taskTracker.backend.exception.InvalidValueArgumentException;
+import org.taskTracker.backend.warehouse.DataHolder;
 
 @JSONObject
 public class TaskPOJO implements Serializable {
@@ -25,9 +25,8 @@ public class TaskPOJO implements Serializable {
 
 	private long id;
 	private String taskName;
-	private LocalDate date;
+	private String date;
 	private TaskStatus status;
-	private List<TaskPOJO> subTasks;
 
 	/*
 	 * 
@@ -40,7 +39,6 @@ public class TaskPOJO implements Serializable {
 		this.taskName = builder.taskName;
 		this.date = builder.date;
 		this.status = builder.status;
-		this.subTasks = builder.subTasks;
 	}
 
 	/*
@@ -51,8 +49,7 @@ public class TaskPOJO implements Serializable {
 
 	@Override
 	public String toString() {
-		return "TASK:: [ID=" + id + "] [NAME=" + taskName + "] [DATE=" + date + "] [STATUS="
-				+ status.asString() + "] \n [subTasks=" + subTasks + "]\n";
+		return "TASK:: [ID=" + id + " | NAME=" + taskName + " | DATE=" + date + " | STATUS="+ status.asString() + "]";
 	}
 
 	/*
@@ -65,11 +62,7 @@ public class TaskPOJO implements Serializable {
 	public final long getId() {
 		return this.id;
 	}
-
-	public final void setId(long id) {
-		this.id = id;
-	}
-
+	
 	@JSONElement(name = "Task Name")
 	public String getTaskName() {
 		return taskName;
@@ -79,15 +72,11 @@ public class TaskPOJO implements Serializable {
 		this.taskName = taskName;
 	}
 
-	@JSONElement(name = "Date")
-	public final LocalDate getDate() {
+	@JSONElement(name = "Created on")
+	public final String getDate() {
 		return this.date;
 	}
 	
-	public final void setDate(long id) {
-		this.id = id;
-	}
-
 	@JSONElement(name = "Status")
 	public final TaskStatus getStatus() {
 		return status;
@@ -96,35 +85,11 @@ public class TaskPOJO implements Serializable {
 	public final void setStatus(TaskStatus status) {
 		this.status = status;
 	}
-
-	@JSONElementArray(name = "Sub-Tasks")
-	public final List<TaskPOJO> getSubTasks() {
-		return subTasks;
+	
+	public final void setStatus(String statusCode) throws InvalidValueArgumentException {
+		this.status = TaskStatus.whichStatus(statusCode);
 	}
-
-	public final void setSubTasks(List<TaskPOJO> subTasks) {
-		this.subTasks = subTasks;
-	}
-
-	public final void addSubTask(TaskPOJO task) {
-		if (Objects.isNull(subTasks))
-			subTasks = new ArrayList<>();
-
-		if (!Objects.isNull(task))
-			this.subTasks.add(task);
-	}
-
-	public final void removeSubTask(TaskPOJO task) {
-		if (!Objects.isNull(task) && !Objects.isNull(subTasks))
-			this.subTasks.remove(task);
-	}
-
-	public final void removeSubTask(int index) {
-		if (!Objects.isNull(subTasks))
-			if (index < subTasks.size() || index >= 0)
-				this.subTasks.remove(index);
-	}
-
+	
 	/*
 	 * 
 	 * BUILDER
@@ -132,39 +97,46 @@ public class TaskPOJO implements Serializable {
 	 */
 
 	public static class Builder {
-		private long id; // INT -> ID | STRING -> NAME | LOCALDATE -> DATE
 		private String taskName;
-		private LocalDate date;
-		private TaskStatus status;
 
 		// Optional
-		private List<TaskPOJO> subTasks;
+		private long id = DataHolder.INSTANCE.getNewUID();
+		private TaskStatus status = TaskStatus.NOTDONE;
+		private String date = LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM dd, YYYY"));
 
-		public Builder(long id, String name, LocalDate dateCreated, TaskStatus status) {
-			this.id = id;
+		public Builder(String name) {
 			this.taskName = name;
-			this.date = dateCreated;
+		}
+
+		public Builder setID(long id) {
+			this.id = id;
+			
+			return this;
+		}
+		
+		public Builder setDate(LocalDate date, Optional<String> pattern) {
+			try {
+			this.date = (pattern.isEmpty()) ? date.toString(): date.format(DateTimeFormatter.ofPattern(pattern.get()));
+			
+			}catch(IllegalArgumentException iae) {
+				System.err.printf("""
+									TaskPOJO::Builder.setDate::IllegalArgumentException
+									Pattern was invalid => %s
+								\n""", pattern.get());
+				
+			}catch(DateTimeException dte) {
+				System.err.println("TaskPOJO::Builder.setDate::DateTimeException");
+			} 
+			
+			return this;
+		}
+		
+		public Builder setTaskStatus(TaskStatus status) {
 			this.status = status;
-		}
-
-		public Builder setsubTasksList(TaskPOJO... tasks) {
-			if (Objects.isNull(tasks) || tasks.length <= 0)
-				return this;
-
-			for (TaskPOJO task : tasks)
-				subTasks.add(task);
-
+			
 			return this;
 		}
-
-		public Builder setsubTasksList(Collection<TaskPOJO> collection) {
-			if (Objects.isNull(collection) || collection.isEmpty())
-				return this;
-
-			collection.forEach(subTasks::add);
-			return this;
-		}
-
+		
 		public TaskPOJO build() {
 			return new TaskPOJO(this);
 		}
