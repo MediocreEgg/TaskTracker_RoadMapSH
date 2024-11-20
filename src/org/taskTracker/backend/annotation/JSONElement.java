@@ -9,9 +9,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 @Retention(RUNTIME)
-@Target({ FIELD, METHOD, RECORD_COMPONENT })
+@Target({ FIELD, METHOD})
 public @interface JSONElement {
 	String	name();
 	
-//	String value();
 }
